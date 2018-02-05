@@ -13,21 +13,27 @@ class ClassPropertyDescriptor(object):
     """
     Thanks StackOverflow =)
     """
-    def __init__(self, fget, fset=None, fdel=None):
-        if not isinstance(fget, (classmethod, staticmethod)):
+    def __init__(self, fget=None, fset=None, fdel=None, doc=None):
+        if fget and not isinstance(fget, (classmethod, staticmethod)):
             fget = classmethod(fget)
 
-        if not isinstance(fset, (classmethod, staticmethod)):
+        if fset and not isinstance(fset, (classmethod, staticmethod)):
             fset = classmethod(fset)
 
-        if not isinstance(fdel, (classmethod, staticmethod)):
+        if fdel and not isinstance(fdel, (classmethod, staticmethod)):
             fdel = classmethod(fdel)
+
+        if doc is None and fget is not None:
+            doc = fget.__doc__
 
         self.fget = fget
         self.fset = fset
         self.fdel = fdel
+        self.__doc__ = doc
 
     def __get__(self, obj, klass=None):
+        if self.fget is None:
+            raise AttributeError("can't get attribute")
         if klass is None:
             klass = type(obj)
         return self.fget.__get__(obj, klass)()
