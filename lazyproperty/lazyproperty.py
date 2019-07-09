@@ -126,6 +126,11 @@ def metalazyproperty(propertyclass):
         ```
         """
         def decor(fget=fget, fset=fset, fdel=fdel, name=name, doc=doc):
+            try:
+                basestring
+            except NameError:
+                basestring = str
+
             if name is None:
                 name = '_' + fget.__name__
 
