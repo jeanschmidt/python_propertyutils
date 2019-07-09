@@ -128,13 +128,14 @@ def metalazyproperty(propertyclass):
         def decor(fget=fget, fset=fset, fdel=fdel, name=name, doc=doc):
             try:
                 basestring
+                check_types = (str, unicode, )
             except NameError:
-                basestring = str
+                check_types = (str, bytes, )
 
             if name is None:
                 name = '_' + fget.__name__
 
-            if not isinstance(name, basestring):
+            if not isinstance(name, check_types):
                 raise Exception('name given to lazypropertyfn should be a '
                                 'valid python string!')
 
